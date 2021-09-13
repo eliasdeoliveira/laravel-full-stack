@@ -7,11 +7,17 @@ use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
+
+    public Int $status = 200;
+
     public function index()
     {
         try {
             $cliente = new Cliente();
-            $resposta = $cliente->get();
+            $resposta = $cliente
+                ->join('categorias', 'categorias.id', '=', 'clientes.categoria_id')
+                ->select('clientes.*', 'categorias.nome as categoria')
+                ->get();
         } catch (\Throwable $erro) {
             //throw $th;
             $resposta = $erro;
@@ -31,11 +37,32 @@ class ClienteController extends Controller
         return response()->json($resposta, 201);
     }
 
+
+    public function search(Request $request)
+    {
+        try {
+            $cliente = new Cliente();
+            $resposta = $cliente
+                ->join('categorias', 'categorias.id', '=', 'clientes.categoria_id')
+                ->select('clientes.*', 'categorias.nome as categoria')
+                ->where('clientes.nome', 'LIKE', '%' . $request->all()['texto'] . '%')
+                ->orWhere('clientes.uf', 'like', '%' . $request->all()['texto'] . '%')
+                ->orWhere('categorias.nome', 'like', '%' . $request->all()['texto'] . '%')
+                ->get();
+        } catch (\Throwable $erro) {
+            //throw $th;
+            $resposta = $erro;
+            $this->status = 400;
+        }
+        return response()->json($resposta, $this->status);
+    }
+
     public function insert(Request $request)
     {
         try {
             $resposta = $this->validarFormulario($request->all());
             if ($resposta == true) {
+                $this->status = 201;
                 $cliente = new Cliente();
                 $resposta = $cliente->create($request->all());
             } else {
@@ -44,11 +71,12 @@ class ClienteController extends Controller
                     'mensagem' => 'Cliente é de Minas Gerais, não é permitido cadastrar clientes que sejam do tipo pessoa física'
                 );
             }
-        } catch (\Throwable $erro) {
+        } catch (\Exception  $erro) {
             //throw $th;
+            $this->status = 400;
             $resposta = $erro;
         }
-        return response()->json($resposta, 201);
+        return response()->json($resposta, $this->status);
     }
 
     public function update(Request $request, $id)
@@ -77,10 +105,14 @@ class ClienteController extends Controller
 
     private function validarFormulario($dados)
     {
-        if (($dados['uf'] == 'MG' || $dados['uf'] == 'Minas Gerais') && $dados['tipoCliente'] == 'Pessoa Fisica') {
-            return false;
-        } else {
-            return true;
+        try {
+            if (($dados['uf'] == 'MG' || $dados['uf'] == 'Minas Gerais') && $dados['tipoCliente'] == 'Pessoa Fisica') {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (\Throwable $th) {
+            return response()->json($th, 404);
         }
     }
 }

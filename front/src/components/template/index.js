@@ -21,27 +21,31 @@ export const Template = (props) => {
     return (
         <div className="d-flex">
             <div className="animate__animated animate__fadeInLeft" ref={sideBar}>
-                <div className="d-flex flex-column flex-shrink-0 p-3 text-white" style={{ width: 280, height: '100vh', backgroundColor: '#2980B9' }}>
-                    <a href="/" className="text-white text-decoration-none">
-                        <h3 className="text-white mt-3 text-center">
-                            Dashboard
-                        </h3>
-                    </a>
-                    <hr />
-                    <ul className="nav nav-pills flex-column mb-auto">
-                        <li className="nav-item">
-                            <a href="/" className="nav-link" aria-current="page">
-                                <i className="fas fa-home pr-2"></i> Inicio
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/cadastrar" className="nav-link text-white">
-                                <i className="fas fa-plus-circle pr-2"></i> Cadastrar
-                            </a>
-                        </li>
-                    </ul>
-                    <hr />
+                <div className="d-flex flex-column justify-content-between p-3 text-white" style={{ width: 280, height: '100vh', backgroundColor: '#2980B9' }}>
+                    <div>
+                        <a href="/" className="text-white text-decoration-none">
+                            <h3 className="text-white mt-3 text-center">
+                                Dashboard
+                            </h3>
+                        </a>
+                        <hr />
+                        <ul className="nav nav-pills flex-column mb-auto">
+                            <li className="nav-item">
+                                <a href="/" className="nav-link" aria-current="page">
+                                    <i className="fas fa-home pr-2"></i> Inicio
+                                </a>
+                            </li>
+                        </ul>
+                        <ul className="nav nav-pills flex-column mb-auto">
+                            <li>
+                                <a href="/cadastrar" className="nav-link text-white">
+                                    <i className="fas fa-plus-circle pr-2"></i> Cadastrar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <div className="dropdown">
+                        <hr />
                         <button type="button" className="btn btn-light w-100">
                             <strong>
                                 Sair

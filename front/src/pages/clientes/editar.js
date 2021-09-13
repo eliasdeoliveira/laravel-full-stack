@@ -1,11 +1,16 @@
 import React from 'react';
 import api from '../../services/api';
 import { Template } from './../../components/template/index';
+import InputMask from "react-input-mask";
 export default function Editar(props) {
     const [mensagem, setMensagem] = React.useState('');
+    const [listaDeCategorias, setListaDeCategorias] = React.useState('');
     const nome = React.useRef(null);
     const tipoCliente = React.useRef(null);
     const estado = React.useRef(null);
+    const categoria = React.useRef(null);
+    const dataDeFundacao = React.useRef(null);
+    const telefone = React.useRef(null);
     const validandoFormulario = async (event) => {
         event.preventDefault();
         let id = props.match.params.id;
@@ -13,6 +18,9 @@ export default function Editar(props) {
             'nome': nome.current.value,
             'tipoCliente': tipoCliente.current.value,
             'uf': estado.current.value,
+            'categoria_id': categoria.current.value,
+            'dataFundacao': dataDeFundacao.current.value,
+            'telefone': telefone.current.value,
         }
         await api({
             method: 'put',
@@ -53,11 +61,51 @@ export default function Editar(props) {
             if (resposta.length) {
                 nome.current.value = resposta[0].nome;
                 tipoCliente.current.value = resposta[0].tipoCliente;
-                estado.current.value = resposta[0].estado;
+                estado.current.value = resposta[0].uf;
+                categoria.current.value = resposta[0].categoria_id;
+                dataDeFundacao.current.value = resposta[0].dataFundacao;
+                setNumero(resposta[0].telefone);
             }
         }
-        listarClientes()
-    }, [])
+        listarClientes();
+        const listarCategorias = async () => {
+            let resposta = await api({
+                method: 'get',
+                url: '/categorias'
+            }).then((response) => {
+                setMensagem('')
+                return response.data;
+            }).catch((error) => {
+                setMensagem(
+                    <div className="alert alert-danger">
+                        {error}
+                    </div>
+                );
+            });
+            if (resposta.length > 0) {
+                setListaDeCategorias(
+                    <>
+                        {
+                            [].map.call(resposta, function (informacao) {
+                                return (
+                                    <option key={informacao.id} value={informacao.id}>{informacao.nome}</option>
+                                )
+                            })
+                        }
+                    </>
+                )
+            } else {
+                setListaDeCategorias(
+                    <option value={0}>Não existe categoria</option>
+                )
+            }
+
+        }
+        listarCategorias()
+    }, []);
+
+    const [numero, setNumero] = React.useState('');
+
     return (
         <Template icone={<i className="fas fa-edit"></i>} titulo={'Editar'}>
             <section>
@@ -87,10 +135,58 @@ export default function Editar(props) {
                                 className="form-select"
                                 required
                                 ref={tipoCliente}>
-                                <option selected disabled defaultValue={'0'}>Selecione</option>
-                                <option defaultValue={'Pessoa Fisica'}>Pessoa Fisica</option>
-                                <option defaultValue={'Pessoa Juridica'}>Pessoa Juridica</option>
+                                <option disabled value={'0'}>Selecione</option>
+                                <option value={'Pessoa Fisica'}>Pessoa Fisica</option>
+                                <option value={'Pessoa Juridica'}>Pessoa Juridica</option>
                             </select>
+                        </div>
+
+                        <div className="mb-3">
+                            <label
+                                htmlFor="Nome"
+                                className="form-label">
+                                Categoria
+                            </label>
+                            <select
+                                className="form-select"
+                                required
+                                ref={categoria}
+                                defaultValue="0">
+                                <option disabled value={'0'}>Selecione</option>
+                                {listaDeCategorias}
+                            </select>
+                        </div>
+                        <div className="mb-3">
+                            <label
+                                htmlFor="Nome"
+                                className="form-label">
+                                Data de Fundação / Data de Nascimento
+                            </label>
+                            <input
+                                type="date"
+                                className="form-control w-100"
+                                placeholder="Nome"
+                                required
+                                ref={dataDeFundacao} />
+                        </div>
+                        <div className="mb-3">
+                            <label
+                                htmlFor="Nome"
+                                className="form-label">
+                                Telefone
+                            </label>
+                            {/* <InputTelefone
+                                // props={(event) => event}
+                                onKeyUp={(evt) => setNumero(evt.target.value)}
+                            /> */}
+                            <InputMask
+                                mask="(99) 9 9999-9999"
+                                value={numero}
+                                onChange={(evt) => setNumero(evt.target.value)}
+                                ref={telefone}
+                                className="form-control w-100"
+                                required >
+                            </InputMask>
                         </div>
                         <div className="mb-3">
                             <label
@@ -102,10 +198,10 @@ export default function Editar(props) {
                                 className="form-select"
                                 required
                                 ref={estado}>
-                                <option selected disabled defaultValue={'0'}>Selecione</option>
-                                <option defaultValue={'Minas Gerais'}>Minas Gerais</option>
-                                <option defaultValue={'São Paulo'}>São Paulo</option>
-                                <option defaultValue={'Rio de Janeiro'}>Rio de Janeiro</option>
+                                <option disabled value={'0'}>Selecione</option>
+                                <option value={'Minas Gerais'}>Minas Gerais</option>
+                                <option value={'São Paulo'}>São Paulo</option>
+                                <option value={'Rio de Janeiro'}>Rio de Janeiro</option>
                             </select>
                         </div>
                         <button type="submit" className="btn btnAzul">

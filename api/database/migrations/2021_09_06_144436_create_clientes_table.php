@@ -18,7 +18,10 @@ class CreateClientesTable extends Migration
             $table->string('nome', 255);
             $table->string('tipoCliente', 255);
             $table->string('uf', 255);
+            $table->integer('categoria_id');
             $table->foreign('categoria_id')->references('id')->on('categorias');
+            $table->date('dataFundacao');
+            $table->string('telefone', 30);
             $table->timestamps();
         });
     }

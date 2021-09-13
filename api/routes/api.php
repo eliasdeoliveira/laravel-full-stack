@@ -32,5 +32,6 @@ Route::delete('categorias/delete/{id}', [CategoriaController::class, 'delete']);
 Route::get('/clientes', [ClienteController::class, 'index']);
 Route::post('clientes/insert', [ClienteController::class, 'insert']);
 Route::get('clientes/get/{id}', [ClienteController::class, 'getOne']);
+Route::post('clientes/search', [ClienteController::class, 'search']);
 Route::put('clientes/update/{id}', [ClienteController::class, 'update']);
 Route::delete('clientes/delete/{id}', [ClienteController::class, 'delete']);
