@@ -5,8 +5,8 @@ export default function Editar(props) {
     const sessoaPergunta = React.useRef(null);
     const [mensagem, setMensagem] = React.useState(
         <>
-            <div class="alert alert-danger text-center" role="alert" style={{ fontSize: 'large' }}>
-                <i class="fas fa-exclamation-triangle"></i> Atenção! Você realmente deseja excluir este item?
+            <div className="alert alert-danger text-center" role="alert" style={{ fontSize: 'large' }}>
+                <i className="fas fa-exclamation-triangle"></i> Atenção! Você realmente deseja excluir este item?
             </div>
             <div className="mt-3 text-center">
                 <button className="btn btnAzul" onClick={() => { excluirCliente() }}>
@@ -25,7 +25,7 @@ export default function Editar(props) {
             url: '/clientes/delete/' + id
         }).then((response) => {
             setMensagem(
-                <div class="text-center">
+                <div className="text-center">
                     <div className="alert alert-success text-center" style={{ fontSize: 'x-large' }}>
                         <i className="far fa-smile"></i> Parabéns! Cliente excluido com sucesso.
                     </div>
@@ -37,7 +37,7 @@ export default function Editar(props) {
             return response.data;
         }).catch(function (error) {
             setMensagem(
-                <div class="text-center">
+                <div className="text-center">
                     <div className="alert alert-danger text-center">
                         <i className="fas fa-exclamation-triangle"></i> Ops! Ocorreu um erro
                     </div>
